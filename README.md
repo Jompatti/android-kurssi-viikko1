@@ -1,5 +1,6 @@
 # TODO App
 Sovellus täyttää kaikki tehtävän vaatimukset
+
 Linkki videoon: https://youtu.be/8dA70zlK9sk
 
 ## Datamalli
