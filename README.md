@@ -3,6 +3,8 @@ Sovellus täyttää kaikki tehtävän vaatimukset
 
 Linkki videoon: https://youtu.be/8dA70zlK9sk
 
+Data class, Mock-data ja puhtaat Kotlin-funktiot sijaitsevat Domain paketissa, eli ne on eristetty UI-koodista. Ne vastaavat pelkästään sovelluksen logiikasta.
+
 ## Datamalli
 
 Projektissa on Task -data class, joka kuvaa yhden tehtävän.  
