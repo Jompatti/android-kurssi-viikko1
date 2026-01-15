@@ -5,12 +5,23 @@ fun addTask(list: List<Task>, task: Task): List<Task>{
 }
 
 fun toggleDone(list: List<Task>, id: Int): List<Task> {
-   val newList = list.map { task ->
+   return list.map { task ->
        if(task.id == id){
            task.copy(done = !task.done)
        } else {
            task
        }
    }
-    return newList
+}
+
+fun filterByDone(list: List<Task>, done: Boolean): List<Task> {
+    return list.filter { task ->
+        task.done == done
+    }
+}
+
+fun sortByDueDate(list: List<Task>): List<Task> {
+    return list.sortedBy { task ->
+        task.dueDate
+    }
 }

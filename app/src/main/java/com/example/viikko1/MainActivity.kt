@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.viikko1.domain.Task
 import com.example.viikko1.domain.addTask
+import com.example.viikko1.domain.filterByDone
+import com.example.viikko1.domain.sortByDueDate
 import com.example.viikko1.domain.todoItems
 import com.example.viikko1.domain.toggleDone
 import com.example.viikko1.ui.theme.Viikko1Theme
@@ -61,39 +66,41 @@ fun HomeScreen(title: String, modifier: Modifier = Modifier) {
         .fillMaxWidth()
         .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
-
-
     ){
         // App title
         Text(text = title, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold )
 
+
         // Todo list task rows
         var taskList by remember { mutableStateOf(todoItems) }
-        taskList.forEach { task ->
-            Card() {
-                Column(modifier = Modifier
-                    .padding(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = "${task.title}", fontWeight = FontWeight.Bold, modifier = Modifier.weight(6f,true))
-                        Text(text = "${task.priority}", modifier = Modifier.weight(1f,true))
-                        Text(text = "${task.dueDate}", modifier = Modifier.weight(4f,true))
-
-                        IconToggleButton(checked = task.done, onCheckedChange = { taskList = toggleDone(taskList, task.id) }) {
-                            if (task.done) {
-                                Icon(Icons.Filled.CheckCircle, contentDescription = "Toggle Check")
-                            } else {
-                                Icon(Icons.Outlined.CheckCircle, contentDescription = " Toggle Check")
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(taskList) { task ->
+                Card {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(task.title, fontWeight = FontWeight.Bold, modifier = Modifier.weight(6f))
+                            Text("${task.priority}", modifier = Modifier.weight(1f))
+                            Text(task.dueDate, modifier = Modifier.weight(4f))
+                            IconToggleButton(
+                                checked = task.done,
+                                onCheckedChange = { taskList = toggleDone(taskList, task.id) }
+                            ) {
+                                if(task.done) Icon(Icons.Filled.CheckCircle, contentDescription = "Done")
+                                else Icon(Icons.Outlined.CheckCircle, contentDescription = "Not Done")
                             }
                         }
+                        if(!task.description.isEmpty()) Text(text = task.description)
                     }
-//                    Text(text = "${task.description}")
                 }
             }
         }
+
 
         // Add tasks
         var text by remember { mutableStateOf("") }
@@ -125,9 +132,14 @@ fun HomeScreen(title: String, modifier: Modifier = Modifier) {
                     Icons.Outlined.AddCircle,
                     contentDescription = "Add task",
                 )
-
             }
         }
 
+
+        // Filter and sort buttons
+        Row() {
+            Button(onClick = { taskList = sortByDueDate(taskList) }) { Text("Sort By Due Date")}
+            Button(onClick = { taskList = filterByDone(taskList, true) }) { Text("Filter By Done")}
+        }
     }
 }
